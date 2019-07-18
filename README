@@ -1,0 +1,29 @@
+https://developers.mercadolivre.com.br
+
+npm init -y
+npm install --save mercadolibre express ejs dotenv
+touch app.js
+mkdir bin && touch bin/www
+-- set `app = express()` in app.js and export it
+-- set full content in www
+mkdir public && mkdir views && touch views/index.ejs
+-- set initial/basic HTML content in index.ejs
+-- set content (except routers, only index) in app.js
+-- set script 'start' in package.json
+npm start
+-- ********* ngrok http 3000 *********** (npx??  npm i -g??  outra forma?? talvez nem precise...)
+-- signup if you don't have an account
+-- create an application
+-- require dotenv config()
+touch .env
+-- set content in .env (remember to mention .gitignore)
+-- OAuth:
+  -- redirect to meliObject.getAuthURL(redirect_uri) (https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=APP_ID)
+  -- mercadolibre will redirect back to redirect_uri (with ?code=CODE_TO_GENERATE_TOKEN)
+  -- get token by calling Meli.authorize(code, redirect_uri, callback) (https://api.mercadolibre.com/oauth/token?grant_type=authorization_code&client_id=APP_ID&client_secret=SECRET_KEY&code=SERVER_GENERATED_AUTHORIZATION_CODE&redirect_uri=REDIRECT_URI)
+  touch tokens.js
+  -- set content in tokens.js
+  -- "save" info (access_token, refresh_token, etc)
+-- meliObject.post()
+-- meliObject.get(path, [params,] callback)
+  -- items, orders, messages
