@@ -14,5 +14,8 @@
     "ejs": "^2.6.2",
     "express": "^4.17.1",
     "mercadolibre": "0.0.13"
+  },
+  "engines": {
+    "node": "12.3.1"
   }
 }
