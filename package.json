@@ -13,7 +13,8 @@
     "dotenv": "^8.0.0",
     "ejs": "^2.6.2",
     "express": "^4.17.1",
-    "mercadolibre": "0.0.13"
+    "mercadolibre": "0.0.13",
+    "multer": "^1.4.2"
   },
   "engines": {
     "node": "12.3.1"

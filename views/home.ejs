@@ -12,7 +12,7 @@
 
   <p><b>posts:</b><br /><a href="/posts">let's go!</a></p>
 
-  <form action="/post" method="POST">
+  <form action="/post" method="POST" enctype="multipart/form-data">
     <div>
       <label for="title">Título da publicação:</label>
       <input type="text" name="title" id="title" value="Item de Teste – Por favor, NÃO OFERTAR!" />
@@ -75,6 +75,11 @@
     <div>
       <label for="description">Descrição do produto:</label><br />
       <textarea name="description" id="description" cols="25" rows="5">Descrição de teste :)</textarea>
+    </div>
+
+    <div>
+      <label for="picture">Foto do produto:</label>
+      <input type="file" name="picture" id="picture" />
     </div>
 
     <div>

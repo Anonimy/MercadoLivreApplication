@@ -7,12 +7,12 @@ assumimos que o cara já tem:
   - git instalado
 
 npm init -y
-npm install --save mercadolibre express ejs dotenv
+npm install --save mercadolibre express ejs dotenv multer
 touch app.js
 mkdir bin && touch bin/www
 -- set `app = express()` in app.js and export it
 -- set full content in www
-mkdir public && mkdir views && touch views/index.ejs
+mkdir public && mkdir public/pictures && mkdir public/css && mkdir views && touch views/index.ejs
 -- set initial/basic HTML content in index.ejs
 -- set content (except routers / only index) in app.js
 -- set script 'start' in package.json
