@@ -1,10 +1,10 @@
 const express = require('express');
+const app = express();
 const path = require('path');
 const meli = require('mercadolibre');
 const multer = require('multer');
 const { validateToken } = require('./middlewares/tokens');
 const { meli_get } = require('./utils');
-const app = express();
 require('dotenv').config();
 
 const storage = multer.diskStorage({

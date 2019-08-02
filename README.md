@@ -137,10 +137,22 @@ ___
 
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
-  
+
   app.get('/', (req, res) => {
     res.render('index');
   });
 
   module.exports = app;
   ```
+
+- Teste sua aplicação rodando o comando `npm start` no terminal!<br>
+_Lembre-se de que você pode pará-la a qualquer momento pressionando as teclas **Ctrl+C**._
+____
+
+## Crie uma aplicação no Mercado Livre
+
+Agora que temos uma aplicação em Node.js pronta, é hora de criar nossa aplicação dentro do Mercado Livre.
+
+- Para isso, acesse: https://developers.mercadolivre.com.br/devcenter.
+
+- Clique em "Criar nova aplicação".
