@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const meli = require('mercadolibre');
 const multer = require('multer');
-const crypto = require('crypto');
 const { validateToken } = require('./middlewares/tokens');
 const { meli_get } = require('./utils');
 const app = express();
@@ -27,7 +26,7 @@ app.get('/', (req, res) => {
 });
 
 // TODO: exemplo de get
-app.get('/home', validateToken, async (req, res,) => {
+app.get('/home', validateToken, async (req, res) => {
   try {
     const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET, res.locals.access_token);
     const user = await meli_get(meliObject, '/users/me');
@@ -89,7 +88,6 @@ app.post('/post', validateToken, upload.single('picture'), async (req, res) => {
       if (err) {
         throw err;
       } else {
-        console.log('picture source:', body.pictures[0].source);
         console.log('publicado na categoria:', predict.name);
         console.log('category probability (0-1):', predict.prediction_probability, predict.variations);
         res.send(response);

@@ -1,6 +1,3 @@
-https://developers.mercadolivre.com.br
-
-// TODO: rever passo-a-passo
 
 assumimos que o cara já tem:
   - node/npm instalado
@@ -12,10 +9,10 @@ touch app.js
 mkdir bin && touch bin/www
 -- set `app = express()` in app.js and export it
 -- set full content in www
+-- set script 'start' in package.json
 mkdir public && mkdir public/pictures && mkdir public/css && mkdir views && touch views/index.ejs
 -- set initial/basic HTML content in index.ejs
 -- set content (except routers / only index) in app.js
--- set script 'start' in package.json
 npm start
 -- ********* ngrok http 3000 *********** (talvez nem precise)
 -- signup if you don't have an account
