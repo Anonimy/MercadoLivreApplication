@@ -184,12 +184,14 @@ Para proteger nossas variáveis de ambiente, o arquivo `.env` nunca será compar
   ```
   CLIENT_ID=
   CLIENT_SECRET=
+  REDIRECT_URI=
   ```
 
 - Depois, crie um arquivo `.env`. Ele será uma cópia de `.env.example`, porém nesse arquivo, sim, adicione os valores imediatamente após os sinais de igual:
   ```
   CLIENT_ID={PREENCHA COM O VALOR DO ID INFORMADO PELO MERCADO LIVRE}
   CLIENT_SECRET={PREENCHA COM A SECRET KEY INFORMADA PELO MERCADO LIVRE}
+  REDIRECT_URI=http://localhost:3000
   ```
 
 - Para importarmos essas variáveis de ambiente no nosso código, utilizaremos a dependência **dotenv**. Modifique seu código no arquivo `app.js` dessa forma:
@@ -246,7 +248,7 @@ Para proteger nossas variáveis de ambiente, o arquivo `.env` nunca será compar
 
   const validateToken = (req, res, next) => {
     if (!tokens.access_token || (new Date()) >= tokens.expires) {
-      const redirect_uri = `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}`;
+      const redirect_uri = REDIRECT_URI + req.baseUrl + req.path;
       const { code } = req.query;
       const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET);
       if (code) {
@@ -608,7 +610,7 @@ ___
 
 - Para subir os arquivos ao servidor do Heroku, rode o comando `git push heroku master`.
 
-- Lembrando que as variáveis do arquivo `.env` não devem subir diretamente ao servidor. Existe um modo de configurar variáveis de ambiente no Heroku direto pela linha de comando. Primeiro, rode o comando `heroku config:set CLIENT_ID={INSIRA O ID DA APLICAÇÃO AQUI}` e depois com a variável restante: `heroku config:set CLIENT_SECRET={INSIRA A KEY SECRET DA APLICAÇÃO AQUI}`.
+- Lembrando que as variáveis do arquivo `.env` não devem subir diretamente ao servidor. Existe um modo de configurar variáveis de ambiente no Heroku direto pela linha de comando. Primeiro, rode o comando `heroku config:set CLIENT_ID={INSIRA O ID DA APLICAÇÃO AQUI}`, depois com a _key secret_: `heroku config:set CLIENT_SECRET={INSIRA A KEY SECRET DA APLICAÇÃO AQUI}`. E, por último, com a URL base da aplicação. No nosso caso, ficaria assim: `heroku config:set REDIRECT_URI=https://my-meli-application.herokuapp.com`.
 
 - E, por fim, para ver sua aplicação funcionando, rode o comando `heroku open`.
 ___
@@ -622,9 +624,8 @@ Agora que você publicou a sua primeira aplicação, a URL já não é mais em l
 - Clique nos três pontos e depois em "editar" para editar a aplicação:
 ![](./public/pictures/meliapplication-edit.png)
 
-- Modifique a "URI de redirect" para a nova forcenida pelo Heroku:
+- Modifique a "URI de redirect" para a nova forcenida pelo Heroku (essa URI deve ser a mesma configurada no arquivo `.env`, na variável `REDIRECT_URI`):
 ![](./public/pictures/meliapplication-uri.png)
 
 - Modifique, também, a "URL de retornos de chamada de notificação":
 ![](./public/pictures/meliapplication-heroku-notif.png)
-

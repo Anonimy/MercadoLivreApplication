@@ -1,7 +1,7 @@
 const meli = require('mercadolibre');
 require('dotenv').config();
 
-const { CLIENT_ID, CLIENT_SECRET } = process.env;
+const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = process.env;
 
 const tokens = {
   access_token: null,
@@ -18,7 +18,7 @@ const setTokens = (newTokens) => {
 
 const validateToken = (req, res, next) => {
   if (!tokens.access_token || (new Date()) >= tokens.expires) {
-    const redirect_uri = `https://${req.get('host')}${req.baseUrl}${req.path}`;
+    const redirect_uri = REDIRECT_URI + req.baseUrl + req.path;
     const { code } = req.query;
     const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET);
     if (code) {
