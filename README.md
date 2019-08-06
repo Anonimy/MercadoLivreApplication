@@ -231,7 +231,7 @@ Para proteger nossas variáveis de ambiente, o arquivo `.env` nunca será compar
   const meli = require('mercadolibre');
   require('dotenv').config();
 
-  const { CLIENT_ID, CLIENT_SECRET } = process.env;
+  const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = process.env;
 
   const tokens = {
     access_token: null,
@@ -449,6 +449,8 @@ Criamos uma página com um formulário para criar novas publicações, mas ainda
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
+  app.use(express.static(path.join(__dirname, 'public')));
+
   app.get('/', (req, res) => {
     res.render('index');
   });
@@ -500,6 +502,8 @@ Criamos uma página com um formulário para criar novas publicações, mas ainda
 
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
+
+  app.use(express.static(path.join(__dirname, 'public')));
 
   app.get('/', (req, res) => {
     res.render('index');
@@ -629,3 +633,104 @@ Agora que você publicou a sua primeira aplicação, a URL já não é mais em l
 
 - Modifique, também, a "URL de retornos de chamada de notificação":
 ![](./public/pictures/meliapplication-heroku-notif.png)
+
+___
+
+## Configuração de notificações no código
+
+Agora que temos uma rota exposta, o Mercado Livre consegue fazer requisições para nossa aplicação sempre que algo interessante acontece com os tópicos selecionados na sua aplicação. Nós dissemos que as notificações devem chegar em "https://my-meli-application.herokuapp.com/notifications", então vamos configurar essa rota.
+
+- Abra o arquivo `app.js` e modifique-o para que fique da seguinte forma:
+  ```js
+  const express = require('express');
+  const app = express();
+  const path = require('path');
+  require('dotenv').config();
+  const meli = require('mercadolibre');
+  const { validateToken } = require('./middlewares/tokens');
+  const { meli_get } = require('./utils');
+  const multer = require('multer');
+
+  const { CLIENT_ID, CLIENT_SECRET } = process.env;
+
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, './public/pictures'),
+    filename: (req, file, cb) => cb(null, Date.now() + file.originalname)
+  });
+
+  const upload = multer({ storage });
+
+  app.set('views', path.join(__dirname, 'views'));
+  app.set('view engine', 'ejs');
+
+  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.json());
+
+  app.get('/', (req, res) => {
+    res.render('index');
+  });
+
+  app.get('/home', validateToken, async (req, res) => {
+    try {
+      const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET, res.locals.access_token);
+      const user = await meli_get(meliObject, '/users/me');
+      const currencies = await meli_get(meliObject, '/currencies');
+      const listing_types = await meli_get(meliObject, `/sites/${user.site_id}/listing_types`);
+      res.render('home', {
+        user,
+        currencies,
+        listing_types
+      });
+    } catch (err) {
+      console.log('Something went wrong', err);
+      res.status(500).send(`Error! ${err}`);
+    }
+  });
+
+  app.post('/post', validateToken, upload.single('picture'), async (req, res) => {
+    try {
+      const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET, res.locals.access_token);
+      const user = await meli_get(meliObject, '/users/me');
+      const predict = await meli_get(meliObject, `/sites/${user.site_id}/category_predictor/predict?title=${encodeURIComponent(req.body.title)}`);
+      const body = {
+        title: req.body.title,
+        category_id: predict.id,
+        price: req.body.price,
+        currency_id: req.body.currency,
+        available_quantity: req.body.quantity,
+        buying_mode: 'buy_it_now',
+        listing_type_id: req.body.listing_type,
+        condition: req.body.condition,
+        description: req.body.description,
+        tags: [ 'immediate_payment' ],
+        pictures: [
+          {
+            source: `${req.protocol}://${req.get('host')}/pictures/${req.file.filename}`
+          }
+        ]
+      };
+      meliObject.post('/items', body, null, (err, response) => {
+        if (err) {
+          throw err;
+        } else {
+          console.log('publicado na categoria:', predict.name);
+          console.log('category probability (0-1):', predict.prediction_probability, predict.variations);
+          res.send(response);
+        }
+      });
+    } catch(err) {
+      console.log('Something went wrong', err);
+      res.status(500).send(`Error! ${err}`);
+    }
+  });
+
+  app.get('notifications', (req, res) => {
+    res.send('ok');
+    console.log(req.body);
+    // Recomendamos enviar um status 200 o mais rapido possível.
+    // Você pode fazer algo assíncrono logo em seguida. Salvar num
+    // banco de dados de tempo real, como o firebase, por exemplo.
+  });
+
+  module.exports = app;
+  ```

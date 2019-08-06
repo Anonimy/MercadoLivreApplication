@@ -18,8 +18,9 @@ const { CLIENT_ID, CLIENT_SECRET } = process.env;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use(express.urlencoded({ extended: false }));
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
 app.get('/', (req, res) => {
   res.render('index');
@@ -100,9 +101,12 @@ app.post('/post', validateToken, upload.single('picture'), async (req, res) => {
 });
 
 // TODO: exemplo de notificações
-app.get('/notifications', (req, res, next) => {
+app.get('notifications', (req, res) => {
   res.send('ok');
-  console.log('do something asynchrounous, e.g.: firebase real-time database', req.body);
+  console.log(req.body);
+  // Recomendamos enviar um status 200 o mais rapido possível.
+  // Você pode fazer algo assíncrono logo em seguida. Salvar num
+  // banco de dados de tempo real, como o firebase, por exemplo.
 });
 
 module.exports = app;
