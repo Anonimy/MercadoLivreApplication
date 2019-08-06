@@ -231,6 +231,8 @@ Para proteger nossas variáveis de ambiente, o arquivo `.env` nunca será compar
   const express = require('express');
   const app = express();
   const path = require('path');
+  const helmet = require('helmet');
+  const session = require('cookie-session');
   require('dotenv').config();
 
   const { CLIENT_ID, CLIENT_SECRET, SYS_PWD } = process.env;
@@ -367,12 +369,14 @@ A SDK do Mercado Livre é pensada para trabalhar com o Node.js a partir da vers�
   const express = require('express');
   const app = express();
   const path = require('path');
+  const helmet = require('helmet');
+  const session = require('cookie-session');
   require('dotenv').config();
   const meli = require('mercadolibre');
   const { validateToken } = require('./middlewares/tokens');
   const { meli_get } = require('./utils');
 
-  const { CLIENT_ID, CLIENT_SECRET } = process.env;
+  const { CLIENT_ID, CLIENT_SECRET, SYS_PWD } = process.env;
 
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
@@ -507,13 +511,15 @@ Criamos uma página com um formulário para criar novas publicações, mas ainda
   const express = require('express');
   const app = express();
   const path = require('path');
+  const helmet = require('helmet');
+  const session = require('cookie-session');
   require('dotenv').config();
   const meli = require('mercadolibre');
   const { validateToken } = require('./middlewares/tokens');
   const { meli_get } = require('./utils');
   const multer = require('multer');
 
-  const { CLIENT_ID, CLIENT_SECRET } = process.env;
+  const { CLIENT_ID, CLIENT_SECRET, SYS_PWD } = process.env;
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, './public/pictures'),
@@ -580,13 +586,15 @@ Criamos uma página com um formulário para criar novas publicações, mas ainda
   const express = require('express');
   const app = express();
   const path = require('path');
+  const helmet = require('helmet');
+  const session = require('cookie-session');
   require('dotenv').config();
   const meli = require('mercadolibre');
   const { validateToken } = require('./middlewares/tokens');
   const { meli_get } = require('./utils');
   const multer = require('multer');
 
-  const { CLIENT_ID, CLIENT_SECRET } = process.env;
+  const { CLIENT_ID, CLIENT_SECRET, SYS_PWD } = process.env;
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, './public/pictures'),
@@ -728,7 +736,14 @@ ___
 
 - Para subir os arquivos ao servidor do Heroku, rode o comando `git push heroku master`.
 
-- Lembrando que as variáveis do arquivo `.env` não devem subir diretamente ao servidor. Existe um modo de configurar variáveis de ambiente no Heroku direto pela linha de comando. Primeiro, rode o comando `heroku config:set CLIENT_ID={INSIRA O ID DA APLICAÇÃO AQUI}`, depois com a _key secret_: `heroku config:set CLIENT_SECRET={INSIRA A KEY SECRET DA APLICAÇÃO AQUI}`. E, por último, com a URL base da aplicação. No nosso caso, ficaria assim: `heroku config:set REDIRECT_URI=https://my-meli-application.herokuapp.com`.
+- Lembrando que as variáveis do arquivo `.env` não devem subir diretamente ao servidor. Existe um modo de configurar variáveis de ambiente no Heroku direto pela linha de comando. Para configurar cada variável de ambiente, rode os comandos abaixo:
+  - `heroku config:set CLIENT_ID={INSIRA O ID DA APLICAÇÃO AQUI}`
+  
+  - `heroku config:set CLIENT_SECRET={INSIRA A KEY SECRET DA APLICAÇÃO AQUI}`
+  
+  - `heroku config:set REDIRECT_URI=https://my-meli-application.herokuapp.com`
+
+  - `heroku config:set SYS_PWD={INSIRA COM A SENHA QUE VOCÊ UTILIZARÁ AQUI}`
 
 - E, por fim, para ver sua aplicação funcionando, rode o comando `heroku open`.
 ___
@@ -759,13 +774,15 @@ Agora que temos uma rota exposta, o Mercado Livre consegue fazer requisições p
   const express = require('express');
   const app = express();
   const path = require('path');
+  const helmet = require('helmet');
+  const session = require('cookie-session');
   require('dotenv').config();
   const meli = require('mercadolibre');
   const { validateToken } = require('./middlewares/tokens');
   const { meli_get } = require('./utils');
   const multer = require('multer');
 
-  const { CLIENT_ID, CLIENT_SECRET } = process.env;
+  const { CLIENT_ID, CLIENT_SECRET, SYS_PWD } = process.env;
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, './public/pictures'),
@@ -866,3 +883,9 @@ Agora que temos uma rota exposta, o Mercado Livre consegue fazer requisições p
 
   module.exports = app;
   ```
+  Para subir as alterações, podemos repetir o fluxo dos comandos Git:
+    - `git add .`
+
+    - `git commit -m "adiciona rota de notificações"`
+
+    - `git push heroku master`
