@@ -18,7 +18,7 @@ const setTokens = (newTokens) => {
 
 const validateToken = (req, res, next) => {
   if (!tokens.access_token || (new Date()) >= tokens.expires) {
-    const redirect_uri = `${req.protocol}://${req.get('host')}`;
+    const redirect_uri = `https://${req.get('host')}${req.baseUrl}${req.path}`;
     res.send(redirect_uri);
     return;
     const { code } = req.query;
