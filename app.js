@@ -101,7 +101,7 @@ app.post('/post', validateToken, upload.single('picture'), async (req, res) => {
 });
 
 // TODO: exemplo de notificações
-app.get('notifications', (req, res) => {
+app.get('/notifications', (req, res) => {
   res.send('ok');
   console.log(req.body);
   // Recomendamos enviar um status 200 o mais rapido possível.

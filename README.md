@@ -724,7 +724,7 @@ Agora que temos uma rota exposta, o Mercado Livre consegue fazer requisições p
     }
   });
 
-  app.get('notifications', (req, res) => {
+  app.get('/notifications', (req, res) => {
     res.send('ok');
     console.log(req.body);
     // Recomendamos enviar um status 200 o mais rapido possível.
