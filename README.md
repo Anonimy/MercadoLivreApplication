@@ -137,7 +137,7 @@ ___
   </html>
   ```
 
-- Uma vez que temos nosso visual definido, vamos ligá-la ao servidor que criamos. Podemos fazer isso modificando o arquivo `app.js` da seguinte forma:
+- Uma vez que temos nosso visual definido, vamos ligá-la ao servidor que criamos. Vamos aproveitar para também fazermos uma rota de login e a criação de uma session para manter o seu usuário logado e sua aplicação protegida. Podemos fazer isso modificando o arquivo `app.js` da seguinte forma:
   ```js
   const express = require('express');
   const app = express();
@@ -175,8 +175,8 @@ ___
   module.exports = app;
   ```
 
-- Teste sua aplicação rodando o comando `npm start` no terminal!
-  > Lembre-se de que você pode pará-la a qualquer momento pressionando as teclas **Ctrl+C**
+- Teste sua aplicação rodando o comando `npm start` no terminal! A senha padrão que colocamos é "pwd", mas iremos modificar isso na próxima seção.
+  > Lembre-se de que você pode parar a aplicação a qualquer momento pressionando as teclas **Ctrl**+**C**
 ____
 
 ## Crie uma aplicação no Mercado Livre
@@ -215,6 +215,7 @@ Para proteger nossas variáveis de ambiente, o arquivo `.env` nunca será compar
   CLIENT_ID=
   CLIENT_SECRET=
   REDIRECT_URI=
+  SYS_PWD=
   ```
 
 - Depois, crie um arquivo `.env`. Ele será uma cópia de `.env.example`, porém nesse arquivo, sim, adicione os valores imediatamente após os sinais de igual:
@@ -222,6 +223,7 @@ Para proteger nossas variáveis de ambiente, o arquivo `.env` nunca será compar
   CLIENT_ID={PREENCHA COM O VALOR DO ID INFORMADO PELO MERCADO LIVRE}
   CLIENT_SECRET={PREENCHA COM A SECRET KEY INFORMADA PELO MERCADO LIVRE}
   REDIRECT_URI=http://localhost:3000
+  SYS_PWD={PREENCHA COM A SENHA QUE VOCÊ UTILIZARÁ NO SISTEMA}
   ```
 
 - Para importarmos essas variáveis de ambiente no nosso código, utilizaremos a dependência **dotenv**. Modifique seu código no arquivo `app.js` dessa forma:
@@ -231,7 +233,7 @@ Para proteger nossas variáveis de ambiente, o arquivo `.env` nunca será compar
   const path = require('path');
   require('dotenv').config();
 
-  const { CLIENT_ID, CLIENT_SECRET } = process.env;
+  const { CLIENT_ID, CLIENT_SECRET, SYS_PWD } = process.env;
 
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
@@ -252,7 +254,7 @@ Para proteger nossas variáveis de ambiente, o arquivo `.env` nunca será compar
   });
 
   app.post('/login', (req, res) => {
-    if (req.body.password === 'pwd') {
+    if (req.body.password === SYS_PWD) {
       req.session.user = true;
       res.redirect('/home');
     } else {
@@ -297,25 +299,29 @@ Para proteger nossas variáveis de ambiente, o arquivo `.env` nunca será compar
   };
 
   const validateToken = (req, res, next) => {
-    if (!tokens.access_token || (new Date()) >= tokens.expires) {
-      const redirect_uri = REDIRECT_URI + req.baseUrl + req.path;
-      const { code } = req.query;
-      const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET);
-      if (code) {
-        meliObject.authorize(code, redirect_uri, (error, response) => {
-          if (error) {
-            throw error;
-          }
-          setTokens(response);
-          res.locals.access_token = tokens.access_token;
-          res.redirect(redirect_uri);
-        });
+    if (req.session.user) {
+      if (!tokens.access_token || (new Date()) >= tokens.expires) {
+        const redirect_uri = REDIRECT_URI + req.baseUrl + req.path;
+        const { code } = req.query;
+        const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET);
+        if (code) {
+          meliObject.authorize(code, redirect_uri, (error, response) => {
+            if (error) {
+              throw error;
+            }
+            setTokens(response);
+            res.locals.access_token = tokens.access_token;
+            res.redirect(redirect_uri);
+          });
+        } else {
+          res.redirect(meliObject.getAuthURL(redirect_uri));
+        }
       } else {
-        res.redirect(meliObject.getAuthURL(redirect_uri));
+        res.locals.access_token = tokens.access_token;
+        next();
       }
     } else {
-      res.locals.access_token = tokens.access_token;
-      next();
+      res.redirect('/');
     }
   }
 
@@ -387,7 +393,7 @@ A SDK do Mercado Livre é pensada para trabalhar com o Node.js a partir da vers�
   });
 
   app.post('/login', (req, res) => {
-    if (req.body.password === 'pwd') {
+    if (req.body.password === SYS_PWD) {
       req.session.user = true;
       res.redirect('/home');
     } else {
@@ -536,7 +542,7 @@ Criamos uma página com um formulário para criar novas publicações, mas ainda
   });
 
   app.post('/login', (req, res) => {
-    if (req.body.password === 'pwd') {
+    if (req.body.password === SYS_PWD) {
       req.session.user = true;
       res.redirect('/home');
     } else {
@@ -609,7 +615,7 @@ Criamos uma página com um formulário para criar novas publicações, mas ainda
   });
 
   app.post('/login', (req, res) => {
-    if (req.body.password === 'pwd') {
+    if (req.body.password === SYS_PWD) {
       req.session.user = true;
       res.redirect('/home');
     } else {
@@ -788,7 +794,7 @@ Agora que temos uma rota exposta, o Mercado Livre consegue fazer requisições p
   });
 
   app.post('/login', (req, res) => {
-    if (req.body.password === 'pwd') {
+    if (req.body.password === SYS_PWD) {
       req.session.user = true;
       res.redirect('/home');
     } else {
