@@ -15,7 +15,7 @@ ___
 
 - Rode o comando `npm init -y` para inicializar um projeto em Node.js. Vários arquivos devem ser gerados no seu diretório.
 
-- Agora vamos instalar as dependências que utilizaremos no decorrer do projeto. Rode o comando `npm install --save mercadolibre express ejs dotenv multer`.
+- Agora vamos instalar as dependências que utilizaremos no decorrer do projeto. Rode o comando `npm install --save mercadolibre express ejs dotenv multer helmet cookie-session`.
   - **mercadolibre**: esse é o SDK do Mercado Livre, que irá auxiliar/facilitar o desenvolvimento da nossa integração.
 
   - **express**: facilitará o desenvolvimento da nossa aplicação em Node.js.
@@ -25,6 +25,10 @@ ___
   - **dotenv**: permitirá inserir variáveis de ambiente definidos em um arquivo *.env* no nosso código.
 
   - **multer**: facilitará o upload de arquivos (envio de fotos para o Mercado Livre).
+
+  - **helmet**: criará uma camada de proteção para sua aplicação Node.js.
+
+  - **cookie-session**: será responsável pelo gerenciamento dos dados de session (para validar um usuário logado, por exemplo).
 
 ___
 
@@ -124,7 +128,11 @@ ___
   </head>
   <body>
     <h1>Welcome to your own new MeliApplication!</h1>
-    <p><a href="/home">Let's Begin!</a></p>
+    <form action="/login" method="POST">
+      <label for="password">Senha:</label>
+      <input type="password" name="password" id="password" />
+      <button type="submit">Let's begin!</button>
+    </form>
   </body>
   </html>
   ```
@@ -134,19 +142,41 @@ ___
   const express = require('express');
   const app = express();
   const path = require('path');
+  const helmet = require('helmet');
+  const session = require('cookie-session');
 
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
+
+  app.use(helmet());
+  app.use(session({
+    name: 'session',
+    keys: ['bd7126f457237e4aab0d47124ce4aac2', '9009def68579d15d871a5bf346422839'],
+    cookie: {
+      httpOnly: true,
+      expires: new Date(Date.now() + 60 * 60 * 1000 * 6) // 6 horas
+    },
+  }));
+  app.use(express.urlencoded({ extended: false }));
 
   app.get('/', (req, res) => {
     res.render('index');
   });
 
+  app.post('/login', (req, res) => {
+    if (req.body.password === 'pwd') {
+      req.session.user = true;
+      res.redirect('/home');
+    } else {
+      res.redirect('/?error=senha-incorreta');
+    }
+  });
+
   module.exports = app;
   ```
 
-- Teste sua aplicação rodando o comando `npm start` no terminal!<br>
-_Lembre-se de que você pode pará-la a qualquer momento pressionando as teclas **Ctrl+C**._
+- Teste sua aplicação rodando o comando `npm start` no terminal!
+  > Lembre-se de que você pode pará-la a qualquer momento pressionando as teclas **Ctrl+C**
 ____
 
 ## Crie uma aplicação no Mercado Livre
@@ -169,7 +199,7 @@ Agora que temos uma aplicação em Node.js pronta, é hora de criarmos nossa apl
 
 - Uma vez criada sua aplicação, você será redirecionado de volta à página inicial, na qual sua aplicação será listada. Nessa listagem, você pode ver o ID e a Secret Key que sua aplicação expõe. Com esses valores podemos começar a nossa integração!
 
-> Nota sobre URL FINAL
+> Lembre-se de que "localhost" é uma URL provisória que será substituída pela URL fornecida pelo Heroku, depois que fizermos o deploy!
 ___
 
 ## Integração do app com o Mercado Livre
@@ -206,8 +236,28 @@ Para proteger nossas variáveis de ambiente, o arquivo `.env` nunca será compar
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
+  app.use(helmet());
+  app.use(session({
+    name: 'session',
+    keys: ['bd7126f457237e4aab0d47124ce4aac2', '9009def68579d15d871a5bf346422839'],
+    cookie: {
+      httpOnly: true,
+      expires: new Date(Date.now() + 60 * 60 * 1000 * 6) // 6 horas
+    },
+  }));
+  app.use(express.urlencoded({ extended: false }));
+
   app.get('/', (req, res) => {
     res.render('index');
+  });
+
+  app.post('/login', (req, res) => {
+    if (req.body.password === 'pwd') {
+      req.session.user = true;
+      res.redirect('/home');
+    } else {
+      res.redirect('/?error=senha-incorreta');
+    }
   });
 
   module.exports = app;
@@ -321,8 +371,28 @@ A SDK do Mercado Livre é pensada para trabalhar com o Node.js a partir da vers�
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
+  app.use(helmet());
+  app.use(session({
+    name: 'session',
+    keys: ['bd7126f457237e4aab0d47124ce4aac2', '9009def68579d15d871a5bf346422839'],
+    cookie: {
+      httpOnly: true,
+      expires: new Date(Date.now() + 60 * 60 * 1000 * 6) // 6 horas
+    },
+  }));
+  app.use(express.urlencoded({ extended: false }));
+
   app.get('/', (req, res) => {
     res.render('index');
+  });
+
+  app.post('/login', (req, res) => {
+    if (req.body.password === 'pwd') {
+      req.session.user = true;
+      res.redirect('/home');
+    } else {
+      res.redirect('/?error=senha-incorreta');
+    }
   });
 
   app.get('/home', validateToken, async (req, res) => {
@@ -449,10 +519,29 @@ Criamos uma página com um formulário para criar novas publicações, mas ainda
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
+  app.use(helmet());
+  app.use(session({
+    name: 'session',
+    keys: ['bd7126f457237e4aab0d47124ce4aac2', '9009def68579d15d871a5bf346422839'],
+    cookie: {
+      httpOnly: true,
+      expires: new Date(Date.now() + 60 * 60 * 1000 * 6) // 6 horas
+    },
+  }));
+  app.use(express.urlencoded({ extended: false }));
   app.use(express.static(path.join(__dirname, 'public')));
 
   app.get('/', (req, res) => {
     res.render('index');
+  });
+
+  app.post('/login', (req, res) => {
+    if (req.body.password === 'pwd') {
+      req.session.user = true;
+      res.redirect('/home');
+    } else {
+      res.redirect('/?error=senha-incorreta');
+    }
   });
 
   app.get('/home', validateToken, async (req, res) => {
@@ -503,10 +592,29 @@ Criamos uma página com um formulário para criar novas publicações, mas ainda
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
+  app.use(helmet());
+  app.use(session({
+    name: 'session',
+    keys: ['bd7126f457237e4aab0d47124ce4aac2', '9009def68579d15d871a5bf346422839'],
+    cookie: {
+      httpOnly: true,
+      expires: new Date(Date.now() + 60 * 60 * 1000 * 6) // 6 horas
+    },
+  }));
+  app.use(express.urlencoded({ extended: false }));
   app.use(express.static(path.join(__dirname, 'public')));
 
   app.get('/', (req, res) => {
     res.render('index');
+  });
+
+  app.post('/login', (req, res) => {
+    if (req.body.password === 'pwd') {
+      req.session.user = true;
+      res.redirect('/home');
+    } else {
+      res.redirect('/?error=senha-incorreta');
+    }
   });
 
   app.get('/home', validateToken, async (req, res) => {
@@ -662,12 +770,30 @@ Agora que temos uma rota exposta, o Mercado Livre consegue fazer requisições p
 
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
-
+  app.use(helmet());
+  app.use(session({
+    name: 'session',
+    keys: ['bd7126f457237e4aab0d47124ce4aac2', '9009def68579d15d871a5bf346422839'],
+    cookie: {
+      httpOnly: true,
+      expires: new Date(Date.now() + 60 * 60 * 1000 * 6) // 6 horas
+    },
+  }));
+  app.use(express.urlencoded({ extended: false }));
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(express.json());
 
   app.get('/', (req, res) => {
     res.render('index');
+  });
+
+  app.post('/login', (req, res) => {
+    if (req.body.password === 'pwd') {
+      req.session.user = true;
+      res.redirect('/home');
+    } else {
+      res.redirect('/?error=senha-incorreta');
+    }
   });
 
   app.get('/home', validateToken, async (req, res) => {

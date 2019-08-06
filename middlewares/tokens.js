@@ -17,25 +17,29 @@ const setTokens = (newTokens) => {
 };
 
 const validateToken = (req, res, next) => {
-  if (!tokens.access_token || (new Date()) >= tokens.expires) {
-    const redirect_uri = REDIRECT_URI + req.baseUrl + req.path;
-    const { code } = req.query;
-    const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET);
-    if (code) {
-      meliObject.authorize(code, redirect_uri, (error, response) => {
-        if (error) {
-          throw error;
-        }
-        setTokens(response);
-        res.locals.access_token = tokens.access_token;
-        res.redirect(redirect_uri);
-      });
+  if (req.session.user) {
+    if (!tokens.access_token || (new Date()) >= tokens.expires) {
+      const redirect_uri = REDIRECT_URI + req.baseUrl + req.path;
+      const { code } = req.query;
+      const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET);
+      if (code) {
+        meliObject.authorize(code, redirect_uri, (error, response) => {
+          if (error) {
+            throw error;
+          }
+          setTokens(response);
+          res.locals.access_token = tokens.access_token;
+          res.redirect(redirect_uri);
+        });
+      } else {
+        res.redirect(meliObject.getAuthURL(redirect_uri));
+      }
     } else {
-      res.redirect(meliObject.getAuthURL(redirect_uri));
+      res.locals.access_token = tokens.access_token;
+      next();
     }
   } else {
-    res.locals.access_token = tokens.access_token;
-    next();
+    res.redirect('/');
   }
 }
 
