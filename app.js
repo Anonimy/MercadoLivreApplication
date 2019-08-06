@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-const { CLIENT_ID, CLIENT_SECRET } = process.env;
+const { CLIENT_ID, CLIENT_SECRET, SYS_PWD } = process.env;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  if (req.body.password === 'pwd') {
+  if (req.body.password === SYS_PWD) {
     req.session.user = true;
     res.redirect('/home');
   } else {
