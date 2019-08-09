@@ -1,0 +1,62 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background-color: #eee;
+  font-size: 18px;
+  height: 100%;
+}
+
+button {
+  border: 0;
+  background-color: #3483fa;
+  color: #fff;
+  padding: 12px 32px;
+  border-radius: 3px;
+  font-size: 0.7em;
+  outline: 0;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: #3465fa
+}
+
+.container {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  max-width: 900px;
+  margin: 50px auto 30px;
+  padding: 60px 0;
+  border-radius: 10px;
+  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.35);
+}
+
+.container input,
+.container textarea,
+.container select {
+  margin: 0;
+  margin-bottom: 32px;
+}
+
+.container input[type="text"],
+.container input[type="password"] {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid #ccc;
+  height: 32px;
+  width: 240px;
+  outline: 0;
+}
+
+.container input[type="text"]:focus,
+.container input[type="password"]:focus {
+  border-color: #3483fa;
+}

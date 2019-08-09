@@ -5,72 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Home - My Meli Application</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
 </head>
 <body>
-  <p><b>all posts:</b><br /><a href="/posts">let's go!</a></p>
+  <div class="container">
+    <p><b>todos os posts:</b> <a href="/posts">let's go!</a></p>
 
-  <form action="/post" method="POST" enctype="multipart/form-data">
-    <div>
-      <label for="title">Título da publicação:</label>
-      <input type="text" name="title" id="title" value="Item de Teste – Por favor, NÃO OFERTAR!" />
-    </div>
+    <form action="/post" method="POST" enctype="multipart/form-data">
+      <div>
+        <label for="title">Título da publicação:</label>
+        <input type="text" name="title" id="title" value="Item de Teste – Por favor, NÃO OFERTAR!" />
+      </div>
 
-    <div>
-      <label for="price">Preço:</label>
-      <input type="text" name="price" id="price" value="9999.99" />
-    </div>
+      <div>
+        <label for="price">Preço:</label>
+        <input type="text" name="price" id="price" value="9999.99" />
+      </div>
 
-    <div>
-      <label for="quantity">Quantidade disponível:</label>
-      <input type="text" name="quantity" id="quantity" value="1" />
-    </div>
+      <div>
+        <label for="quantity">Quantidade disponível:</label>
+        <input type="number" name="quantity" id="quantity" value="1" />
+      </div>
 
-    <div>
-      <label for="select__currency">Selecione a moeda:</label>
-      <select id="select__currency" name="currency">
-        <% for (var i = 0; i < currencies.length; i++) { %>
-          <option value="<%= currencies[i].id %>">
-            <%= currencies[i].description %> (<%= currencies[i].symbol %>)
-          </option>
-        <% } %>
-      </select>
-    </div>
+      <div>
+        <label for="select__currency">Selecione a moeda:</label>
+        <select id="select__currency" name="currency">
+          <% for (var i = 0; i < currencies.length; i++) { %>
+            <option value="<%= currencies[i].id %>">
+              <%= currencies[i].description %> (<%= currencies[i].symbol %>)
+            </option>
+          <% } %>
+        </select>
+      </div>
 
-    <div>
-      <label for="select__listing_type">Selecione o tipo de listagem:</label>
-      <select id="select__listing_type" name="listing_type">
-        <% for (var i = 0; i < listing_types.length; i++) { %>
-          <option value="<%= listing_types[i].id %>">
-            <%= listing_types[i].name %>
-          </option>
-        <% } %>
-      </select>
-    </div>
+      <div>
+        <label for="select__listing_type">Selecione o tipo de listagem:</label>
+        <select id="select__listing_type" name="listing_type">
+          <% for (var i = 0; i < listing_types.length; i++) { %>
+            <option value="<%= listing_types[i].id %>">
+              <%= listing_types[i].name %>
+            </option>
+          <% } %>
+        </select>
+      </div>
 
-    <div>
-      <label>Selecione a condição do produto:</label>
-      <label for="condition__new">
-        <input checked type="radio" name="condition" id="condition__new" value="new" /> Novo
-      </label>
-      &nbsp;&nbsp;&nbsp;&nbsp;
-      <label for="condition__used">
-        <input type="radio" name="condition" id="condition__used" value="used" /> Usado
-      </label>
-    </div>
+      <div>
+        <label>Selecione a condição do produto:</label>
+        <label for="condition__new">
+          <input checked type="radio" name="condition" id="condition__new" value="new" /> Novo
+        </label>
+        &nbsp;&nbsp;
+        <label for="condition__used">
+          <input type="radio" name="condition" id="condition__used" value="used" /> Usado
+        </label>
+      </div>
 
-    <div>
-      <label for="description">Descrição do produto:</label><br />
-      <textarea name="description" id="description" cols="25" rows="5">Descrição de teste :)</textarea>
-    </div>
+      <div>
+        <label for="description">Descrição do produto:</label><br />
+        <textarea name="description" id="description" cols="30" rows="5">Descrição de teste :)</textarea>
+      </div>
 
-    <div>
-      <label for="picture">Foto do produto:</label>
-      <input type="file" name="picture" id="picture" />
-    </div>
+      <div>
+        <label for="picture">Foto do produto:</label>
+        <input type="file" name="picture" id="picture" />
+      </div>
 
-    <div>
-      <button type="submit">Publicar</button>
-    </div>
-  </form>
+      <div>
+        <button type="submit">Publicar</button>
+      </div>
+    </form>
+  </div>
 </body>
 </html>

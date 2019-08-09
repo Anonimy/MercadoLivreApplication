@@ -6,7 +6,7 @@ Para seguir este tutorial, você precisará ter instalado:
 - Git (https://git-scm.com/downloads)
 - Node.js (https://nodejs.org/en/download)
 
-Para esse tutorial, utilizaremos o Git na versão 2.20.1 e o Node.js na versão 12.3.1, mas recomendamos sempre utilizar as versões estáveis mais atualizadas.
+Utilizaremos o Git na versão 2.20.1 e o Node.js na versão 12.3.1, mas recomendamos sempre utilizar as versões estáveis mais atualizadas.
 ___
 
 # Modo fast
@@ -18,6 +18,7 @@ ___
 2. Vá ao seu projeto no Heroku e configure as variáveis de ambiente como no print abaixo:
 ![](./public/pictures/meliapplication-heroku.png)
 
+3. Sua integração está pronta para ser usada! :)
 ___
 
 # Modo DIY
