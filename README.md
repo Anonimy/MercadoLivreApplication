@@ -9,6 +9,19 @@ Para seguir este tutorial, você precisará ter instalado:
 Para esse tutorial, utilizaremos o Git na versão 2.20.1 e o Node.js na versão 12.3.1, mas recomendamos sempre utilizar as versões estáveis mais atualizadas.
 ___
 
+# Modo fast
+
+1. Clique no botão para fazer o deploy:
+
+    [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Anonimy/MercadoLivreApplication)
+
+2. Vá ao seu projeto no Heroku e configure as variáveis de ambiente como no print abaixo:
+![](./public/pictures/meliapplication-heroku.png)
+
+___
+
+# Modo DIY
+
 ## Setup do projeto
 
 - Crie o diretório do projeto e vá até ele no seu terminal.
