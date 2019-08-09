@@ -1,4 +1,7 @@
 
+v0: 
+===
+
 assumimos que o cara já tem:
   - node/npm instalado
   - git instalado
@@ -56,3 +59,11 @@ touch views/home.ejs
   heroku create
   git push heroku master
   heroku open
+
+
+v0.1:
+===
+
+- clona o repositorio
+- setup de rota (get items por exemplo)
+- deploy to heroku
