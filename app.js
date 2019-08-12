@@ -47,7 +47,6 @@ app.post('/login', (req, res) => {
   }
 });
 
-// TODO: exemplo de get
 app.get('/home', validateToken, async (req, res) => {
   try {
     const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET, res.locals.access_token);
@@ -67,23 +66,6 @@ app.get('/home', validateToken, async (req, res) => {
   }
 });
 
-app.get('/posts', validateToken, async (req, res) => {
-  try {
-    const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET, res.locals.access_token);
-    const user = await meli_get(meliObject, '/users/me');
-    const items = (await meli_get(meliObject, `/users/${user.id}/items/search`)).results || [];
-    if (items.length) {
-      res.send(items);
-    } else {
-      res.status(404).send('no items were found :(');
-    }
-  } catch(err) {
-    console.log('Something went wrong', err);
-    res.status(500).send(`Error! ${err}`);
-  }
-});
-
-// TODO: exemplo de post
 app.post('/post', validateToken, upload.single('picture'), async (req, res) => {
   try {
     const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET, res.locals.access_token);
@@ -112,7 +94,7 @@ app.post('/post', validateToken, upload.single('picture'), async (req, res) => {
       } else {
         console.log('publicado na categoria:', predict.name);
         console.log('category probability (0-1):', predict.prediction_probability, predict.variations);
-        res.send(response);
+        res.redirect('/posts');
       }
     });
   } catch(err) {
@@ -126,8 +108,29 @@ app.get('/notifications', (req, res) => {
   res.send('ok');
   console.log(req.body);
   // Recomendamos enviar um status 200 o mais rapido possível.
-  // Você pode fazer algo assíncrono logo em seguida. Salvar num
-  // banco de dados de tempo real, como o firebase, por exemplo.
+  // Você pode fazer algo assíncrono logo em seguida. Por exemplo
+  // salvar num banco de dados de tempo real, como o firebase.
+});
+
+app.get('/posts', validateToken, async (req, res) => {
+  try {
+    const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET, res.locals.access_token);
+    const user = await meli_get(meliObject, '/users/me');
+    const items = (await meli_get(meliObject, `/users/${user.id}/items/search`)).results || [];
+    if (items.length) {
+      const result = [];
+      const promises = items.map(item_id => meli_get(meliObject, `/items/${item_id}`));
+      for await (item of promises) {
+        result.push(item);
+      }
+      res.render('posts', { items: result });
+    } else {
+      res.status(404).send('no items were found :(');
+    }
+  } catch(err) {
+    console.log('Something went wrong', err);
+    res.status(500).send(`Error! ${err}`);
+  }
 });
 
 module.exports = app;

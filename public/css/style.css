@@ -60,3 +60,24 @@ button:hover {
 .container input[type="password"]:focus {
   border-color: #3483fa;
 }
+
+.items-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.items-list img {
+  margin-right: 8px;
+}
+
+.items-list a {
+  width: 100%;
+  margin: 0 30px 30px;
+}
+
+.items-list a div {
+  display: flex;
+  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.35);
+  padding: 8px;
+  border-radius: 6px;
+}

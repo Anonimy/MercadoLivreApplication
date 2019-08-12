@@ -65,7 +65,8 @@ v0.1:
 ===
 
 - clona o repositorio
-- setup de rota (get items por exemplo)
 - app no mercado livre
 - testa a aplicação
 - deploy to heroku
+- setup de rota (get items por exemplo)
+- update no heroku
