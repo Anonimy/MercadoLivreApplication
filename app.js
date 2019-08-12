@@ -112,25 +112,4 @@ app.get('/notifications', (req, res) => {
   // salvar num banco de dados de tempo real, como o firebase.
 });
 
-app.get('/posts', validateToken, async (req, res) => {
-  try {
-    const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET, res.locals.access_token);
-    const user = await meli_get(meliObject, '/users/me');
-    const items = (await meli_get(meliObject, `/users/${user.id}/items/search`)).results || [];
-    if (items.length) {
-      const result = [];
-      const promises = items.map(item_id => meli_get(meliObject, `/items/${item_id}`));
-      for await (item of promises) {
-        result.push(item);
-      }
-      res.render('posts', { items: result });
-    } else {
-      res.status(404).send('no items were found :(');
-    }
-  } catch(err) {
-    console.log('Something went wrong', err);
-    res.status(500).send(`Error! ${err}`);
-  }
-});
-
 module.exports = app;
