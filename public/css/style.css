@@ -64,6 +64,7 @@ button:hover {
 .items-list {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .items-list img {
