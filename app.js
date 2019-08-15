@@ -100,7 +100,7 @@ app.post('/post', validateToken, upload.single('picture'), async (req, res) => {
 app.get('/notifications', (req, res) => {
   res.send('ok');
   console.log(req.body);
-  // Recomendamos enviar um status 200 o mais rapido possível.
+  // Recomendamos enviar um status 200 o mais rápido possível.
   // Você pode fazer algo assíncrono logo em seguida. Por exemplo
   // salvar num banco de dados de tempo real, como o firebase.
 });
