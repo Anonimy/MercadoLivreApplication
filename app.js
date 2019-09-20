@@ -87,8 +87,8 @@ app.post('/post', validateToken, upload.single('picture'), async (req, res) => {
         }
       ]
     });
-    console.log('publicado na categoria:', predict.name);
-    console.log('category probability (0-1):', predict.prediction_probability, predict.variations);
+    console.log('Publicado na categoria:', predict.name);
+    console.log('Category probability (0-1):', predict.prediction_probability);
     res.redirect('/posts');
   } catch(err) {
     console.log('Something went wrong', err);
@@ -103,6 +103,27 @@ app.get('/notifications', (req, res) => {
   // Recomendamos enviar um status 200 o mais rapido possível.
   // Você pode fazer algo assíncrono logo em seguida. Por exemplo
   // salvar num banco de dados de tempo real, como o firebase.
+});
+
+app.get('/posts', validateToken, async (req, res) => {
+  try {
+    const meliObject = new MeliObject(res.locals.access_token);
+    const user = await meliObject.get('/users/me');
+    const items = (await meliObject.get(`/users/${user.id}/items/search`)).results || [];
+    if (items.length) {
+      const result = [];
+      const promises = items.map(item_id => meliObject.get(`/items/${item_id}`));
+      for await (item of promises) {
+        result.push(item);
+      }
+      res.render('posts', { items: result });
+    } else {
+      res.status(404).send('No items were found! :(');
+    }
+  } catch(err) {
+    console.error('Something went wrong:', err);
+    res.status(500).send(`Something went wrong: ${err}`)
+  }
 });
 
 module.exports = app;
