@@ -1,3 +1,9 @@
+# ⛔ NO MAINTENANCE INTENDED
+
+**Documentação oficial para criar sua aplicação no Mercado Livre: https://developers.mercadolivre.com.br.**
+
+---
+
 # Mercado Livre - My First App
 
 Para mais informações, visite: https://developers.mercadolivre.com.br.
